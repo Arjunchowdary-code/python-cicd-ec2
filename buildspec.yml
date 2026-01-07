@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install -r requirements.txt -r requirements-dev.txt
+  pre_build:
+    commands:
+      - echo "Running lint..."
+      - flake8 . || true
+  build:
+    commands:
+      - echo "Running tests..."
+      - pytest -q
+      - echo "Packaging artifact..."
+      - mkdir -p bundle
+      - cp -r app.py requirements.txt bundle/
+      - cp -r scripts bundle/
+      - cp -r appspec.yml bundle/
+artifacts:
+  files:
+    - '**/*'
+  base-directory: bundle
